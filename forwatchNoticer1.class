@@ -1,0 +1,6 @@
+package work;
+//상속
+public interface Noticer1 extends Noticer2 {
+	public void notice1(); //안내를 위한 함수1
+
+}
