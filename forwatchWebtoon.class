@@ -1,0 +1,18 @@
+package work;
+
+//상속
+public class Webtoon extends KoreanWave{
+	public String kind="웹툰";
+	public Webtoon(String year,String maker, String genre) {
+		this.year=year;
+		this.maker=maker;
+		this.genre=genre;		
+	}
+//오버라이딩	웹툰일 때의 print
+	public void print() {
+		System.out.println("찾으시는 작품은 "+kind+"으로, "+year+"년부터 연재를 시작했으며 "
+				+"작가는 "+maker+"입니다. 장르는 "+genre+"입니다.");
+	}
+
+
+}
