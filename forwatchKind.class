@@ -1,0 +1,8 @@
+package work;
+//사용자 입력처리를 할 열거타입
+public enum Kind {
+	WEBTOON,
+	MOVIE,
+	DRAMA,
+	NULL
+}
