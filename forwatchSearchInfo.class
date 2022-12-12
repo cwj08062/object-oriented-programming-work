@@ -1,0 +1,419 @@
+package work;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+import java.util.Scanner;
+
+//이 프로그램은 사용자가 웹툰, 영화, 드라마에 대한 정보를 입력하거나 찾을 수 있는 프로그램입니다.
+public class SearchInfo {
+	public static void main(String[] args) throws IOException { //웹툰, 영화, 드라마를 각각 다른 텍스트 파일에 저장 해놓았습니다.
+		List<String> WTlist = new ArrayList<String>(); //웹툰 저장 리스트
+		List<String> WTyearlist = new ArrayList<String>(); //웹툰 연재시작년도 저장 리스트
+		List<String> WTmklist = new ArrayList<String>(); //웹툰작가 저장 리스트
+		List<String> WTgenrelist = new ArrayList<String>(); //웹툰 장르 저장 리스트
+        BufferedReader br1 = new BufferedReader(new FileReader("D:/javalist/Webtoon.txt"));
+        while(true) {
+            String line = br1.readLine();
+            if (line==null) break;  // 더 이상 읽을 라인이 없을 경우 while 문을 빠져나감           
+            String str1=line;
+            String[] word1=str1.split(";");//텍스트 파일은 제목;연도;만든이;장르로 각 줄에 저장해놓았습니다.
+            WTlist.add(word1[0]);  //위 저장 규칙에 따라 각 리스트에 저장
+            WTyearlist.add(word1[1]);
+            WTmklist.add(word1[2]);
+            WTgenrelist.add(word1[3]);
+        }
+        br1.close();
+        
+        
+        List<String> MVlist = new ArrayList<String>(); //영화 정보 저장(위의 웹툰과 동일한 방식)
+		List<String> MVyearlist = new ArrayList<String>();
+		List<String> MVmklist = new ArrayList<String>();
+		List<String> MVgenrelist = new ArrayList<String>();
+        BufferedReader br2 = new BufferedReader(new FileReader("D:/javalist/Movie.txt"));
+        while(true) {
+            String line = br2.readLine();
+            if (line==null) break;  // 더 이상 읽을 라인이 없을 경우 while 문을 빠져나감           
+            String str1=line;
+            String[] word1=str1.split(";");
+            MVlist.add(word1[0]);
+            MVyearlist.add(word1[1]);
+            MVmklist.add(word1[2]);
+            MVgenrelist.add(word1[3]);
+        }
+        br2.close();
+        
+        
+        List<String> DMlist = new ArrayList<String>(); //드라마 정보 저장(위의 웹툰과 동일한 방식)
+		List<String> DMyearlist = new ArrayList<String>();
+		List<String> DMmklist = new ArrayList<String>();
+		List<String> DMgenrelist = new ArrayList<String>();
+        BufferedReader br3 = new BufferedReader(new FileReader("D:/javalist/Drama.txt"));
+        while(true) {
+            String line = br3.readLine();
+            if (line==null) break;  // 더 이상 읽을 라인이 없을 경우 while 문을 빠져나감            
+            String str1=line;
+            String[] word1=str1.split(";");
+            DMlist.add(word1[0]);
+            DMyearlist.add(word1[1]);
+            DMmklist.add(word1[2]);
+            DMgenrelist.add(word1[3]);
+        }
+        br3.close();
+        
+        
+        Notice A=new Notice();        
+        
+        List<String> findlist1 = new ArrayList<String>(); //"구체적 검색"을 실행하기위한 list 3개(아래에 자세한 설명)
+        List<String> findlist2 = new ArrayList<String>();
+        List<String> findlist3 = new ArrayList<String>();
+        Scanner scan=new Scanner(System.in);
+        String user; //사용자로부터 입력받을 문자 저장
+        String kind1; //사용자로부터 입력받을 종류 저장
+        String title; //사용자로부터 입력받을 제목 저장
+        String year; //사용자로부터 입력받을 연도 저장
+        String maker;//사용자로부터 입력받을 만든이 저장
+        String genre;//사용자로부터 입력받을 장르 저장
+        int index=0;//찾은 인덱스를 저장할 변수
+        Kind kind = Kind.valueOf("NULL");
+        while(true) { //크게 정보추가와 정보검색 두가지 기능이 있습니다. 정보추가는 사용자가 정보를 입력하고 그것을 리스트와 텍스트파일에 저장합니다.
+	//정보검색은 단순검색과 구체적 검색으로 나뉘는데, 단순검색은 사용자가 제목을 입력하면 종류, 장르, 연도, 만든이를 출력합니다.
+    //구체적 검색은 사용자가 종류, 연도, 만든이, 장르 중 정보를 선택적으로 입력하면, 해당하는 작품을 출력합니다.    	
+        	A.notice1(); //사용자에게 안내를 하는 인터페이스입니다.
+        	user=scan.nextLine();
+        	if(user.equals("정보추가")) { //사용자에게 정보를 입력받는 코드입니다.
+        		System.out.print("Webtoon, Movie, Drama 중 고르세요 : ");
+        		kind1=scan.nextLine();
+        		System.out.print("제목을 입력하세요 : ");
+        		title=scan.nextLine();
+        		System.out.print("연도를 입력하세요 : ");
+        		year=scan.nextLine();
+        		System.out.print("만든이를 입력하세요 : ");
+        		maker=scan.nextLine();
+        		System.out.print("장르를 입력하세요 : ");
+        		genre=scan.nextLine();
+        		String[] newlist= {kind1,title,year,maker,genre}; //배열에 저장
+        		FileWriter fw2 = new FileWriter("D:/javalist/"+newlist[0]+".txt", true);
+        		for(int i=1; i<2; i++) { //입력받은대로 파일에 저장하는 코드입니다.
+        			fw2.write("\r\n");
+                    fw2.write(newlist[1]+";"+newlist[2]+";"+newlist[3]+";"+newlist[4]);
+                }
+        		fw2.close();
+        		if(kind1.equals("Webtoon")) { //웹툰일 때 리스트에 저장
+        			WTlist.add(title);
+    				WTyearlist.add(year);
+    				WTmklist.add(maker);
+    				WTgenrelist.add(genre);
+    				
+    			}
+    			else if(kind1.equals("Movie")) {//영화일 때 리스트에 저장
+    				MVlist.add(title);
+    				MVyearlist.add(year);
+    				MVmklist.add(maker);
+    				MVgenrelist.add(genre);
+    			}
+    			else if(kind1.equals("Drama")) {//드라마일 때 리스트에 저장
+    				DMlist.add(title);
+    				DMyearlist.add(year);
+    				DMmklist.add(maker);
+    				DMgenrelist.add(genre);
+    			}
+    			else {
+    				System.out.println("잘못된 입력입니다");
+    			}
+        	}
+        	else if(user.equals("정보검색")) {//정보검색을 하는 코드입니다.
+        		A.notice2(); //사용자에게 안내를 하는 인터페이스입니다.
+        		user=scan.nextLine();
+        		if(user.equals("단순검색")) {
+        			System.out.println("제목을 입력하세요");
+        			user=scan.nextLine();
+        			try {
+        				//사용자의 입력에 따라 웹툰리스트에서 정보 찾음
+            			for(int i=0; i<WTlist.size(); i++) {
+            				if(WTlist.get(i).equals(user)) {
+            					kind = Kind.valueOf("WEBTOON");//열거타입 사용        					
+            				    index=i;//해당 작품의 연도,만든이,장르 정보는 모두 다른리스트의 같은 인덱스에 저장되어 있습니다.
+            					break;
+            				}      				
+            				
+            			}
+        			}catch(ArrayIndexOutOfBoundsException e) {
+        				System.out.println("실행 매개값 부족!");
+        			}
+        			//사용자의 입력에 따라 영화리스트에서 정보 찾음
+        			for(int i=0; i<MVlist.size(); i++) {        				
+        				if(MVlist.get(i).equals(user)) {
+        					kind = Kind.valueOf("MOVIE"); //위와 동일       					
+        					index=i;
+        					break;
+        				}       				
+        				
+        			}
+        			//사용자의 입력에 따라 드라마리스트에서 정보 찾음
+        			for(int i=0; i<DMlist.size(); i++) {
+        				if(DMlist.get(i).equals(user)) {
+        					kind = Kind.valueOf("DRAMA");  //위와 동일      					
+        					index=i;
+        					break;
+        				}      				
+        				
+        			}
+        			
+        			if(kind==Kind.WEBTOON) {
+        				year=WTyearlist.get(index);
+        				maker=WTmklist.get(index);
+        				genre=WTgenrelist.get(index);
+        				KoreanWave webtoon=new Webtoon(year,maker,genre); //웹툰클래스에 정보를 넘겨줌
+        				webtoon.print(); //웹툰클래스의 print 함수 사용
+        			}
+        			else if(kind==Kind.MOVIE) {
+        				year=MVyearlist.get(index);
+        				maker=MVmklist.get(index);
+        				genre=MVgenrelist.get(index);
+        				KoreanWave movie=new Movie(year,maker,genre); //영화클래스에 정보를 넘겨줌
+        				movie.print(); //영화클래스의 print 함수 사용
+        			}
+        			else if(kind==Kind.DRAMA) {
+        				year=DMyearlist.get(index);
+        				maker=DMmklist.get(index);
+        				genre=DMgenrelist.get(index);
+        				KoreanWave drama=new Drama(year,maker,genre); //드라마클래스에 정보를 넘겨줌
+        				drama.print(); //드라마클래스의 print 함수 사용
+        			}
+        			else {
+        				System.out.println("찾으시는 검색 결과 없음"); //찾지 못할시 이 문구 출력
+        			}
+        		}
+        		//사용자가 원하는 정보만 입력해서 조건에 맞는 작품만 검색(원하지 않으면 X 입력)
+        		else if(user.equals("구체적 검색")){
+        			System.out.println("종류는? (반드시 철자와 대소문자를 지켜서 Webtoon, Movie, Drama 중 입력하세요)"); //사용자가 정보입력
+        			kind1=scan.nextLine();
+        			System.out.println("연도는?");
+        			year=scan.nextLine();
+        			System.out.println("만든이는?");
+        			maker=scan.nextLine();
+        			System.out.println("장르는?");
+        			genre=scan.nextLine();
+        			
+        			//종류 입력 처리
+        			if(kind1.equals("X")) { //X입력시 아무 동작 하지 않음
+        				
+        			}
+        			else {        				
+        				//각 입력에 따라 해당 제목 정보를 findlist1에 저장
+        				if(kind1.equals("Webtoon")) { 
+        					for(String str : WTlist) {
+        						findlist1.add(str);
+        					}
+        				}
+        				else if(kind1.equals("Movie")) {
+        					for(String str : MVlist) {
+        						findlist1.add(str);
+        				    }    					
+        				}
+        				else {
+        					for(String str : DMlist) {
+        						findlist1.add(str);
+        				    }    					
+        				}	
+        			}
+        			
+        			
+        			//연도 입력 처리
+        			if(year.equals("X")) {
+        				
+        			}
+        			else {
+        			//findlist1이 비어있다면 해당년도 작품을 찾아 그대로 입력	
+        				if(findlist1.isEmpty()) {
+        					for(int i=0; i<WTlist.size(); i++) { //웹툰부터 찾기
+        						if(WTyearlist.get(i).equals(year)) {//사용자 입력과 같은 연도리스트의 객체의 인덱스의 제목리스트 객체를 저장 
+        							findlist1.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) { //위와 동일한 방식
+        						if(MVyearlist.get(i).equals(year)) {
+        							findlist1.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) { //위와 동일한 방식
+        						if(DMyearlist.get(i).equals(year)) {
+        							findlist1.add(DMlist.get(i));
+        						}
+        					}
+        				}
+        				else {
+        					//이미 findlist1에 객체가 들어있다면
+        					//findlist2에 findlist1가 비어있을 때와 동일한 방식으로 해당년도 작품을 입력
+        					for(int i=0; i<WTlist.size(); i++) {
+        						if(WTyearlist.get(i).equals(year)) {
+        							findlist2.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) {
+        						if(MVyearlist.get(i).equals(year)) {
+        							findlist2.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) {
+        						if(DMyearlist.get(i).equals(year)) {
+        							findlist2.add(DMlist.get(i));
+        						}
+        					}
+        					
+        					//findlist1과 findlist2에 공통으로 들어있는 작품만 findlist3에 저장
+        					for(String str : findlist1) {
+        						if(findlist2.contains(str)) {
+        							findlist3.add(str);
+        						}
+        					}
+        					findlist1.clear(); //리스트1을 초기화 후 findlist3을 findlist1에 저장 한 뒤 2,3리스트는 모두 초기화
+        					for(String str : findlist3) {
+        						findlist1.add(str);
+        					}
+        					findlist2.clear();
+        					findlist3.clear();
+        					
+        				}
+        			}
+        			
+        			if(maker.equals("X")) {
+        				
+        			}
+        			else {
+        				//위의 연도를 처리할 때와 모두 동일한 방식입니다.
+        				//단 여기서는 만든이리스트(mklist)를 사용합니다.
+        				if(findlist1.isEmpty()) {
+        					for(int i=0; i<WTlist.size(); i++) {
+        						if(WTmklist.get(i).equals(maker)) {
+        							findlist1.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) {
+        						if(MVmklist.get(i).equals(maker)) {
+        							findlist1.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) {
+        						if(DMmklist.get(i).equals(maker)) {
+        							findlist1.add(DMlist.get(i));
+        						}
+        					}
+        				}
+        				else {
+        					//연도를 처리할 때와 mklist를 사용하는것 빼고는 완전히 동일
+        					for(int i=0; i<WTlist.size(); i++) {
+        						if(WTmklist.get(i).equals(maker)) {
+        							findlist2.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) {
+        						if(MVmklist.get(i).equals(maker)) {
+        							findlist2.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) {
+        						if(DMmklist.get(i).equals(maker)) {
+        							findlist2.add(DMlist.get(i));
+        						}
+        					}
+        					
+        					for(String str : findlist1) {
+        						if(findlist2.contains(str)) {
+        							findlist3.add(str);
+        						}
+        					}
+        					findlist1.clear();
+        					for(String str : findlist3) {
+        						findlist1.add(str);
+        					}
+        					findlist2.clear();
+        					findlist3.clear();
+        					
+        				}
+        			}
+        			
+        			if(genre.equals("X")) {
+        				
+        			}
+        			else {
+        				//마찬가지로 genrelist를 사용하는 것 이외에는 완전히 동일
+        				if(findlist1.isEmpty()) {
+        					for(int i=0; i<WTlist.size(); i++) {
+        						if(WTgenrelist.get(i).contains(genre)) {
+        							findlist1.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) {
+        						if(MVgenrelist.get(i).contains(genre)) {
+        							findlist1.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) {
+        						if(DMgenrelist.get(i).contains(genre)) {
+        							findlist1.add(DMlist.get(i));
+        						}
+        					}
+        				}
+        				else{
+        					//genrelist 사용하는 것 외에는 완전히 동일
+        					for(int i=0; i<WTlist.size(); i++) {
+        						if(WTgenrelist.get(i).contains(genre)) {
+        							findlist2.add(WTlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<MVlist.size(); i++) {
+        						if(MVgenrelist.get(i).contains(genre)) {
+        							findlist2.add(MVlist.get(i));
+        						}
+        					}
+        					for(int i=0; i<DMlist.size(); i++) {
+        						if(DMgenrelist.get(i).contains(genre)) {
+        							findlist2.add(DMlist.get(i));
+        						}
+        					}
+        					
+        					for(String str : findlist1) {
+        						if(findlist2.contains(str)) {
+        							findlist3.add(str);
+        						}
+        					}
+        					findlist1.clear();
+        					for(String str : findlist3) {
+        						findlist1.add(str);
+        					}
+        					findlist2.clear();
+        					findlist3.clear();
+        				}
+        			}
+        			System.out.println(findlist1); //완성된 리스트1을 출력
+        			findlist1.clear(); //리스트1은 다시 초기화
+        		}
+        		else {//잘못된 입력에 대한 처리
+        			System.out.println("잘못된 입력입니다");
+        		}
+        		
+        		
+        	}
+        	else if(user.equals("종료")){ //while문 탈출 조건
+        		System.out.println("종료합니다.");
+        		break;
+        	}
+        	else {
+        		System.out.println("잘못된 입력입니다.");
+        	}
+        	
+        }
+        scan.close();
+        
+        
+	    
+    }            
+        
+        
+        
+	   
+
+}
