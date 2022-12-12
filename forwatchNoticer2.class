@@ -1,0 +1,6 @@
+package work;
+
+public interface Noticer2 {
+	public void notice2(); //안내를 위한 함수2
+
+}
