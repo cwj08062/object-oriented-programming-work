@@ -1,0 +1,17 @@
+package work;
+
+public class Drama extends KoreanWave{
+	public String kind="드라마";
+	public Drama(String year,String maker, String genre) {
+		this.year=year;
+		this.maker=maker;
+		this.genre=genre;		
+	}
+	
+	//오버라이딩	드라마일 때의 print
+	public void print() {
+		System.out.println("찾으시는 작품은 "+kind+"로, "+year+"년부터 방영했으며 "
+				+"작가는 "+maker+"입니다. 장르는 "+genre+"입니다.");
+	}
+
+}
