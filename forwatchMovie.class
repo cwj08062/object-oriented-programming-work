@@ -1,0 +1,17 @@
+package work;
+
+public class Movie extends KoreanWave{
+	public String kind="영화";
+	public Movie(String year,String maker, String genre) {
+		this.year=year;
+		this.maker=maker;
+		this.genre=genre;		
+	}
+	
+	//오버라이딩	영화일 때의 print	
+	public void print() {
+		System.out.println("찾으시는 작품은 "+kind+"로, "+year+"년에 개봉했으며 "
+				+"감독은 "+maker+"입니다. 장르는 "+genre+"입니다.");
+	}
+
+}
