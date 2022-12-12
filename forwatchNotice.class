@@ -1,0 +1,13 @@
+package work;
+
+//인터페이스에 있는 함수 재정의
+public class Notice implements Noticer1{
+	public void notice1() {				
+		System.out.println("정보추가 or 정보검색 or 종료 중 하나를 고르세요");
+				
+	}
+	public void notice2() {
+		System.out.println("단순검색, 구체적 검색 중 하나를 고르세요");
+	}
+
+}
